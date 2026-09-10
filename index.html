@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptForge AI</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & Babel for Browser Rendering -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+  <div id="root"></div>
+
+  <!-- Inline App component or reference -->
+  <script type="text/babel">
+    function App() {
+      return (
+        <div class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+          <h1 class="text-4xl font-bold text-indigo-400 mb-4">PromptForge AI Studio</h1>
+          <p class="text-slate-400 max-w-md">Your deployment connection was successful! Import your React components here to launch your app.</p>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
+
