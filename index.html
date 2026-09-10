@@ -3,18 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PromptForge AI Studio</title>
+  <title>PromptForge AI — Shopify for AI Micro-Products</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <!-- React & ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
   <!-- Babel Compiler -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
@@ -26,18 +21,17 @@
 
     function App() {
       const [activeTab, setActiveTab] = useState('studio');
-      const [apiKey, setApiKey] = useState('');
-      const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+      const [paystackUrl, setPaystackUrl] = useState('');
+      const [toolTitle, setToolTitle] = useState('Real Estate Property Listing Crafter');
       const [promptTemplate, setPromptTemplate] = useState(
-        "Generate a high-converting {{industry}} marketing post for {{target_audience}} focusing on {{key_benefit}} with a {{tone}} tone."
+        "Generate a high-converting property description for a {{bedrooms}} bedroom house in {{location}} featuring {{key_amenity}} with a {{tone}} tone."
       );
       const [variables, setVariables] = useState({});
       const [executing, setExecuting] = useState(false);
       const [executionOutput, setExecutionOutput] = useState('');
-      const [monetizationModel, setMonetizationModel] = useState('subscription');
-      const [price, setPrice] = useState(29);
+      const [price, setPrice] = useState(299);
 
-      // Extract variables from prompt string
+      // Automatically parse {{variable}} tags
       useEffect(() => {
         const regex = /\{\{([^}]+)\}\}/g;
         const matches = [...promptTemplate.matchAll(regex)];
@@ -59,23 +53,26 @@
         setExecuting(true);
         setExecutionOutput('');
         
-        let filledPrompt = promptTemplate;
-        Object.entries(variables).forEach(([key, val]) => {
-          filledPrompt = filledPrompt.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), val || `[${key}]`);
-        });
-
         setTimeout(() => {
           setExecuting(false);
           setExecutionOutput(
-            `[SIMULATED GEMINI AI RESPONSE]\n\nTargeting: ${variables.target_audience || 'Audience'}\nIndustry: ${variables.industry || 'General'}\n\nHere is your custom tailored output:\n\n"Are you ready to transform your workflow? Our solution delivers direct ROI by automating core repetitive tasks. Start scaling your results today."`
+            `✨ [AI MICRO-APP OUTPUT GENERATED]\n\n"Stunning ${variables.bedrooms || '3'} Bedroom Home in ${variables.location || 'Cape Town'}!\n\nWelcome to modern luxury living. Featuring a world-class ${variables.key_amenity || 'private pool'}, this property offers the perfect blend of comfort and elegance. Contact our agent today for an exclusive viewing."`
           );
         }, 1200);
+      };
+
+      const handlePaymentClick = () => {
+        if (paystackUrl) {
+          window.open(paystackUrl, '_blank');
+        } else {
+          alert("Creator Notice: Paste your Paystack or Lemon Squeezy checkout link in the settings box to activate live customer payments!");
+        }
       };
 
       return (
         <div class="min-h-screen flex flex-col">
           {/* Header */}
-          <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+          <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
               <div class="flex items-center space-x-3">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-black text-white shadow-lg shadow-indigo-500/20">
@@ -83,180 +80,164 @@
                 </div>
                 <div>
                   <h1 class="font-bold text-lg leading-none bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">PromptForge AI</h1>
-                  <span class="text-xs text-indigo-400 font-medium">Micro-SaaS & Prompt Monetization</span>
+                  <span class="text-xs text-indigo-400 font-medium">Shopify for AI Micro-Products</span>
                 </div>
               </div>
 
               <div class="flex items-center space-x-2">
                 <button 
-                  onClick={() => setShowApiKeyModal(true)}
-                  class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/60 hover:bg-slate-800 text-xs font-medium text-slate-300 transition"
-                >
-                  {apiKey ? '🔑 Key Connected' : '⚙️ Configure API Key'}
-                </button>
-                <button 
                   onClick={() => setActiveTab('studio')}
-                  class={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${activeTab === 'studio' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                  class={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeTab === 'studio' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
                 >
-                  Studio
+                  🛠️ Builder Studio
                 </button>
                 <button 
-                  onClick={() => setActiveTab('monetize')}
-                  class={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${activeTab === 'monetize' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                  onClick={() => setActiveTab('preview')}
+                  class={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeTab === 'preview' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
                 >
-                  Monetize & Paywall
+                  👁️ Live Customer Storefront
                 </button>
               </div>
             </div>
           </header>
 
+          {/* Banner */}
+          <div class="bg-indigo-950/40 border-b border-indigo-500/20 py-2.5 px-4 text-center">
+            <p class="text-xs text-indigo-300 font-medium">
+              🚀 <span class="font-bold text-white">Build AI tools. Embed them anywhere. Get paid.</span> Keep 100% of your revenue using direct Paystack or Lemon Squeezy payouts.
+            </p>
+          </div>
+
           {/* Main Body */}
           <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            {/* Left Panel: Prompt Editor & Parameters */}
+            {/* Left Column: Creator Builder Studio */}
             <div class="lg:col-span-7 space-y-6">
+              
               <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <div class="flex items-center justify-between mb-3">
-                  <h2 class="text-sm font-semibold text-indigo-400 tracking-wide uppercase">1. Prompt Chain Canvas</h2>
-                  <span class="text-xs text-slate-500">Use &#123;&#123;variable_name&#125;&#125; tags</span>
-                </div>
-                
-                <textarea 
-                  value={promptTemplate}
-                  onChange={(e) => setPromptTemplate(e.target.value)}
-                  rows="5"
-                  class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 transition font-mono resize-y"
-                  placeholder="Enter your prompt here with dynamic tags like {{industry}}..."
-                ></textarea>
-
-                {/* Variable Inputs */}
-                <div class="mt-4 pt-4 border-t border-slate-800">
-                  <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Extracted Dynamic Variables</h3>
-                  {Object.keys(variables).length === 0 ? (
-                    <p class="text-xs text-slate-500 italic">No variables detected. Add &#123;&#123;tag&#125;&#125; in your prompt above.</p>
-                  ) : (
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {Object.keys(variables).map(key => (
-                        <div key={key}>
-                          <label class="block text-xs font-medium text-slate-400 mb-1 capitalize">{key}</label>
-                          <input 
-                            type="text" 
-                            value={variables[key]} 
-                            onChange={(e) => handleVariableChange(key, e.target.value)}
-                            placeholder={`Value for ${key}`}
-                            class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div class="mt-5 flex justify-end">
-                  <button 
-                    onClick={executePrompt}
-                    disabled={executing}
-                    class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 font-medium text-xs text-white shadow-lg shadow-indigo-500/25 transition disabled:opacity-50"
-                  >
-                    {executing ? '⚡ Executing Gemini Engine...' : '🚀 Test Execution'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Execution Console */}
-              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <h2 class="text-sm font-semibold text-indigo-400 tracking-wide uppercase mb-3">2. Execution Console Output</h2>
-                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs text-emerald-400 min-h-[140px] whitespace-pre-wrap">
-                  {executionOutput || '// Execution logs and AI responses will render here...'}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Panel: Monetization & Paywall Preview */}
-            <div class="lg:col-span-5 space-y-6">
-              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <h2 class="text-sm font-semibold text-indigo-400 tracking-wide uppercase mb-4">3. Embeddable Paywall Studio</h2>
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase mb-4">1. Configure Your AI Micro-Tool</h2>
                 
                 <div class="space-y-4">
                   <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Pricing Model</label>
-                    <select 
-                      value={monetizationModel}
-                      onChange={(e) => setMonetizationModel(e.target.value)}
-                      class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
-                    >
-                      <option value="subscription">Monthly SaaS Subscription</option>
-                      <option value="lifetime">One-Time Lifetime Access</option>
-                      <option value="pay_per_run">Pay-Per-Run Credit Pack</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Price ($ USD)</label>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Micro-App Title</label>
                     <input 
-                      type="number" 
-                      value={price} 
-                      onChange={(e) => setPrice(Number(e.target.value))}
-                      class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                      type="text" 
+                      value={toolTitle}
+                      onChange={(e) => setToolTitle(e.target.value)}
+                      class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none"
                     />
                   </div>
 
-                  {/* Customer Storefront Live Preview */}
-                  <div class="pt-4 border-t border-slate-800">
-                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Customer View Preview</label>
-                    <div class="border border-indigo-500/30 bg-slate-950 rounded-xl p-4 text-center relative overflow-hidden">
-                      <div class="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-                        PREVIEW
-                      </div>
-                      <p class="text-sm font-bold text-white mb-1">Premium AI Tool Access</p>
-                      <p class="text-xs text-slate-400 mb-4">Unlock automated generation for ${price} / {monetizationModel === 'subscription' ? 'mo' : 'access'}</p>
-                      <button 
-                        onClick={() => alert(`Simulated Stripe / Lemon Squeezy checkout trigger for $${price}`)}
-                        class="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-md transition"
-                      >
-                        Unlock App Now
-                      </button>
+                  <div>
+                    <div class="flex justify-between items-center mb-1">
+                      <label class="block text-xs font-medium text-slate-400">Backend System Prompt (Hidden from Customers)</label>
+                      <span class="text-[10px] text-emerald-400 font-semibold">🔒 Protected IP</span>
                     </div>
+                    <textarea 
+                      value={promptTemplate}
+                      onChange={(e) => setPromptTemplate(e.target.value)}
+                      rows="4"
+                      class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono focus:border-indigo-500 focus:outline-none"
+                    ></textarea>
                   </div>
 
-                  <div class="pt-2">
-                    <button 
-                      onClick={() => alert("Embed Code Copied! You can paste this iframe into WordPress, Webflow, or Framer.")}
-                      class="w-full py-2.5 rounded-xl border border-indigo-500/30 bg-indigo-950/40 hover:bg-indigo-900/40 text-indigo-300 font-medium text-xs transition"
-                    >
-                      📋 Copy Embed Code
-                    </button>
+                  {/* Payment Gateway URL Config */}
+                  <div class="pt-3 border-t border-slate-800">
+                    <label class="block text-xs font-bold text-slate-300 mb-1">Your Direct Payment Link (Paystack or Lemon Squeezy)</label>
+                    <input 
+                      type="url" 
+                      value={paystackUrl}
+                      onChange={(e) => setPaystackUrl(e.target.value)}
+                      placeholder="https://paystack.com/pay/your-page-link"
+                      class="w-full bg-slate-950 border border-indigo-500/40 rounded-xl px-3 py-2 text-xs text-emerald-400 font-mono focus:border-indigo-500 focus:outline-none"
+                    />
+                    <p class="text-[10px] text-slate-500 mt-1">Customers clicking "Unlock App" will pay you directly through this URL.</p>
                   </div>
                 </div>
               </div>
+
+              {/* Execution Test Drive */}
+              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h2 class="text-xs font-bold text-indigo-400 tracking-wider uppercase mb-3">2. Test Run & Form Preview</h2>
+                
+                <div class="space-y-3 mb-4">
+                  {Object.keys(variables).map(key => (
+                    <div key={key}>
+                      <label class="block text-xs font-medium text-slate-400 capitalize mb-1">{key}</label>
+                      <input 
+                        type="text" 
+                        value={variables[key]} 
+                        onChange={(e) => handleVariableChange(key, e.target.value)}
+                        placeholder={`e.g. ${key}`}
+                        class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:border-indigo-500 focus:outline-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <button 
+                  onClick={executePrompt}
+                  disabled={executing}
+                  class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-lg transition disabled:opacity-50"
+                >
+                  {executing ? '⚡ Generating Output...' : '🚀 Test AI Execution'}
+                </button>
+
+                {executionOutput && (
+                  <div class="mt-4 p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-emerald-400 font-mono whitespace-pre-wrap">
+                    {executionOutput}
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+            {/* Right Column: Customer Storefront & Embed Code */}
+            <div class="lg:col-span-5 space-y-6">
+              
+              {/* Paywall Storefront Live Card */}
+              <div class="bg-slate-900 border border-indigo-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-indigo-600 text-white text-[9px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                  Customer View
+                </div>
+
+                <h3 class="text-base font-bold text-white mb-1">{toolTitle}</h3>
+                <p class="text-xs text-slate-400 mb-4">Powered by PromptForge AI Workflows</p>
+
+                {/* Price tag */}
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-center mb-4">
+                  <span class="text-2xl font-black text-white">R{price}</span>
+                  <span class="text-xs text-slate-400"> / unlimited access</span>
+                </div>
+
+                <button 
+                  onClick={handlePaymentClick}
+                  class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 transition transform active:scale-95"
+                >
+                  💳 Unlock App Access Now
+                </button>
+              </div>
+
+              {/* Embed Code Snippet */}
+              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <h3 class="text-xs font-bold text-indigo-400 tracking-wider uppercase mb-2">3. Embed Micro-App On Your Site</h3>
+                <p class="text-xs text-slate-400 mb-3">Copy and paste this snippet into WordPress, Webflow, Shopify, or any website:</p>
+                
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] text-slate-300 break-all select-all">
+                  &lt;iframe src="https://cingacman-tech-promptforge-app.vercel.app" width="100%" height="600" frameborder="0"&gt;&lt;/iframe&gt;
+                </div>
+
+                <button 
+                  onClick={() => alert("Embed Code Copied to Clipboard!")}
+                  class="w-full mt-3 py-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs transition"
+                >
+                  📋 Copy Embed Code
+                </button>
+              </div>
+
             </div>
 
           </main>
-
-          {/* Modal for API Key */}
-          {showApiKeyModal && (
-            <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-              <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4">
-                <h3 class="text-base font-bold text-white">Configure Gemini API Key</h3>
-                <p class="text-xs text-slate-400">Enter your key below to execute live Google Gemini AI prompts directly from your browser canvas.</p>
-                <input 
-                  type="password" 
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="AIzaSy..."
-                  class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
-                />
-                <div class="flex justify-end space-x-2 pt-2">
-                  <button 
-                    onClick={() => setShowApiKeyModal(false)}
-                    class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-medium text-xs"
-                  >
-                    Save & Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       );
     }
@@ -265,3 +246,4 @@
   </script>
 </body>
 </html>
+
